@@ -7,6 +7,7 @@ const router = express.Router();
 
 // this only runs if the url has /api/hubs in it
 router.get('/', (req, res) => {
+  console.log('doubled', req.doubled)
   Hubs.find(req.query)
   .then(hubs => {
     res.status(200).json(hubs);
