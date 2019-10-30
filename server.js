@@ -13,16 +13,41 @@ function dateLogger(req,res,next) {
 }
 
 function logger(req,res,next){
-  console.log('Request Type:', `${req.method} to ${req-url}`)
+  console.log(`logger:,[${new Date().toISOString()}] ${req.method} to ${req-url}`)
 
   next()
 }
+
+function gateKeeper (req,res,next) {
+
+  const password =req.headers.password || ''
+
+  if(password.length === 0 )
+    res.status(400).json({message: 'please provide a password'})
+  if (password.toLowerCase() === 'mellon') {
+    next();
+  } else {
+    res.status(401).json({ you: 'cannot pass!!' });
+  }  
+}
+
+// function gateKeeper(req, res, next) {
+//   // data can come in the body, url parameters, query string, headers
+//   // new way of reading data sent by the client
+//   const password = req.headers.password || '';
+//   if (password.toLowerCase() === 'mellon') {
+//     next();
+//   } else {
+//     res.status(400).json({ you: 'cannot pass!!' });
+//   }
+// }
 
 
 
 //global middleware 
 server.use(helmet()) // third party
 server.use(express.json()); // built in
+server.use(gateKeeper); 
 server.use(dateLogger)
 // server.use(logger);
 server.use(morgan('dev'));
