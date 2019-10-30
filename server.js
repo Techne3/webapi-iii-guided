@@ -1,5 +1,6 @@
 const express = require('express'); // importing a CommonJS module
 const helmet = require('helmet')
+const morgan = require('morgan')
 
 const hubsRouter = require('./hubs/hubs-router.js');
 
@@ -11,11 +12,11 @@ function dateLogger(req,res,next) {
   next();
 }
 
-app.use(`/api/hubs`, function(req,res,next){
-  console.log('Request Type:', req.method)
+function logger(req,res,next){
+  console.log('Request Type:', `${req.method} to ${req-url}`)
 
   next()
-})
+}
 
 
 
@@ -23,6 +24,8 @@ app.use(`/api/hubs`, function(req,res,next){
 server.use(helmet()) // third party
 server.use(express.json()); // built in
 server.use(dateLogger)
+// server.use(logger);
+server.use(morgan('dev'));
 
 server.use('/api/hubs', hubsRouter);
 
